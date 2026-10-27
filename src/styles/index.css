@@ -1,0 +1,184 @@
+@import 'tailwindcss';
+
+/* Self-hosted fonts (no third-party font requests). */
+@import '@fontsource-variable/bodoni-moda';
+@import '@fontsource-variable/instrument-sans';
+
+/* ------------------------------------------------------------------
+   Kesh Squad design tokens
+   Brand palette is fixed by the concept docs (C1 §1).
+   ------------------------------------------------------------------ */
+@theme {
+  /* Brand */
+  --color-ink: #0b0b0b; /* Matte black — primary background */
+  --color-charcoal: #171717; /* Secondary background, surfaces */
+  --color-gold: #d4af37; /* Primary accent */
+  --color-champagne: #f5d76e; /* Highlight */
+  --color-mist: #b3b3b3; /* Secondary text */
+
+  /* Derived surfaces and lines */
+  --color-ink-raised: #111111;
+  --color-charcoal-high: #1f1f1f;
+  --color-line: #2a2a2a;
+  --color-line-strong: #3a3a3a;
+  --color-gold-deep: #a8892a;
+  --color-muted: #8a8a8a; /* tertiary text, ≥4.5:1 on ink */
+
+  /* Status (tuned for dark surfaces) */
+  --color-success: #7cc79c;
+  --color-danger: #ec7d74;
+  --color-info: #9db8e8;
+  --color-warning: #f5d76e;
+
+  /* Typography */
+  --font-display: 'Bodoni Moda Variable', 'Bodoni Moda', 'Didot', Georgia, serif;
+  --font-sans: 'Instrument Sans Variable', 'Instrument Sans', ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', Roboto, sans-serif;
+
+  /* Type scale (≈1.25 ratio) */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-display-sm: 2.25rem;
+  --text-display-sm--line-height: 1.1;
+  --text-display: 3rem;
+  --text-display--line-height: 1.05;
+  --text-display-lg: 4.5rem;
+  --text-display-lg--line-height: 1;
+
+  /* Radii: controls are pill-shaped, surfaces are soft rectangles */
+  --radius-control: 999px;
+  --radius-field: 0.625rem;
+  --radius-surface: 0.875rem;
+
+  /* Motion */
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-sheen: sheen 2.8s var(--ease-cinematic) 0.4s 1 both;
+  --animate-drift: drift 14s ease-in-out infinite;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+
+  @keyframes sheen {
+    from {
+      background-position: 120% 50%;
+    }
+    to {
+      background-position: -20% 50%;
+    }
+  }
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+      opacity: 0;
+    }
+    20% {
+      opacity: var(--particle-opacity, 0.6);
+    }
+    80% {
+      opacity: var(--particle-opacity, 0.6);
+    }
+    50% {
+      transform: translate3d(var(--dx, 12px), var(--dy, -40px), 0);
+    }
+  }
+  @keyframes shimmer {
+    from {
+      background-position: -200% 0;
+    }
+    to {
+      background-position: 200% 0;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------ */
+@layer base {
+  html {
+    background-color: var(--color-ink);
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    min-height: 100dvh;
+    background-color: var(--color-ink);
+    color: #ffffff;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-gold) 40%, transparent);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-champagne);
+    outline-offset: 3px;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Utilities
+   ------------------------------------------------------------------ */
+@utility text-gold-sheen {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-gold) 0%,
+    var(--color-gold) 38%,
+    #fff6d6 48%,
+    var(--color-champagne) 52%,
+    var(--color-gold) 62%,
+    var(--color-gold) 100%
+  );
+  background-size: 250% 100%;
+  background-position: -20% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility skeleton {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-charcoal) 0%,
+    var(--color-charcoal-high) 50%,
+    var(--color-charcoal) 100%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility hairline-gold {
+  border-color: color-mix(in oklab, var(--color-gold) 22%, transparent);
+}
+
+/* Respect reduced motion everywhere. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
